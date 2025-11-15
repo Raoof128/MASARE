@@ -1,11 +1,21 @@
-# 🔍 Enterprise Malware Analysis Sandbox
+# 🔍 MASARE - Malware Analysis Sandbox with Automated Reverse Engineering
 
-**Advanced reverse engineering & threat intelligence platform for security professionals**
+**Enterprise-grade malware analysis platform for security researchers and threat hunters**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![YARA](https://img.shields.io/badge/YARA-4.3+-green.svg)](https://virustotal.github.io/yara/)
 [![Cuckoo](https://img.shields.io/badge/Cuckoo-2.0+-red.svg)](https://cuckoosandbox.org/)
+
+[![CI/CD Pipeline](https://img.shields.io/github/actions/workflow/status/Raoof128/MASARE/ci.yml?branch=main&label=CI%2FCD)](https://github.com/Raoof128/MASARE/actions)
+[![Code Quality](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black)
+[![Security: Bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+[![GitHub stars](https://img.shields.io/github/stars/Raoof128/MASARE?style=social)](https://github.com/Raoof128/MASARE/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Raoof128/MASARE?style=social)](https://github.com/Raoof128/MASARE/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/Raoof128/MASARE)](https://github.com/Raoof128/MASARE/issues)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/Raoof128/MASARE/graphs/commit-activity)
 
 ## 🎯 Overview
 

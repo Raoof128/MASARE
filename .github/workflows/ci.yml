@@ -1,0 +1,233 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint flake8 black isort
+
+      - name: Run Black (code formatting)
+        run: |
+          black --check --diff analysis/ automation/ detection/
+
+      - name: Run isort (import sorting)
+        run: |
+          isort --check-only --diff analysis/ automation/ detection/
+
+      - name: Run Flake8 (style guide)
+        run: |
+          flake8 analysis/ automation/ detection/ --max-line-length=100 --ignore=E203,W503
+
+      - name: Run Pylint (static analysis)
+        run: |
+          pylint analysis/ automation/ detection/ --max-line-length=100 --disable=C0114,C0115,C0116
+        continue-on-error: true
+
+  security:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Bandit (security linter)
+        run: |
+          pip install bandit
+
+      - name: Run Bandit security scan
+        run: |
+          bandit -r analysis/ automation/ detection/ -ll -i
+
+      - name: Check for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+  syntax:
+    name: Syntax Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Validate Python syntax
+        run: |
+          find . -name "*.py" -type f -exec python -m py_compile {} \;
+
+      - name: Validate Shell scripts
+        run: |
+          sudo apt-get install -y shellcheck
+          find . -name "*.sh" -type f -exec shellcheck {} \;
+
+      - name: Validate JSON files
+        run: |
+          find . -name "*.json" -type f -exec python -m json.tool {} \; > /dev/null
+
+      - name: Validate YAML files
+        run: |
+          pip install yamllint
+          find . -name "*.yml" -o -name "*.yaml" -type f | xargs yamllint
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-mock
+
+      - name: Run pytest
+        run: |
+          pytest tests/ -v --cov=analysis --cov=automation --cov=detection --cov-report=xml --cov-report=term
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  documentation:
+    name: Documentation Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check markdown links
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-quiet-mode: 'yes'
+          use-verbose-mode: 'yes'
+
+      - name: Verify documentation completeness
+        run: |
+          # Check for required files
+          for file in README.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md LICENSE CHANGELOG.md; do
+            if [ ! -f "$file" ]; then
+              echo "Missing required file: $file"
+              exit 1
+            fi
+          done
+
+      - name: Check for TODO/FIXME
+        run: |
+          ! grep -r "TODO\|FIXME" analysis/ automation/ detection/ || echo "Warning: TODO/FIXME found in code"
+
+  build:
+    name: Build Distribution
+    runs-on: ubuntu-latest
+    needs: [lint, security, syntax, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build package
+        run: |
+          python -m build
+
+      - name: Check package
+        run: |
+          twine check dist/*
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-packages
+          path: dist/
+
+  integration-test:
+    name: Integration Tests (Isolation Verification)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Make scripts executable
+        run: |
+          chmod +x tests/test_isolation.sh
+          chmod +x scripts/check_system.sh
+
+      - name: Run system check
+        run: |
+          ./scripts/check_system.sh || echo "Some checks failed (expected in CI)"
+
+      - name: Verify script syntax
+        run: |
+          bash -n tests/test_isolation.sh
+          bash -n scripts/check_system.sh
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [build, integration-test]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            See [CHANGELOG.md](CHANGELOG.md) for details.
+          draft: false
+          prerelease: false

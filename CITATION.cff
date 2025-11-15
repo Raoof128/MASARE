@@ -1,0 +1,123 @@
+# Citation File Format for MASARE
+# https://citation-file-format.github.io/
+
+cff-version: 1.2.0
+message: "If you use MASARE in your research, please cite it as below."
+type: software
+title: "MASARE: Malware Analysis Sandbox with Automated Reverse Engineering"
+abstract: >
+  MASARE is an enterprise-grade malware analysis platform that combines
+  dynamic analysis (Cuckoo Sandbox), static analysis (Ghidra), and automated
+  threat intelligence generation (YARA rules, MITRE ATT&CK mapping). The
+  system provides a completely isolated environment for analyzing malicious
+  software, extracting indicators of compromise (IOCs), and generating
+  actionable threat intelligence for security operations centers (SOCs) and
+  incident response teams.
+
+authors:
+  - family-names: "MASARE Project"
+    given-names: "Contributors"
+    email: "masare@example.com"
+
+repository-code: "https://github.com/Raoof128/MASARE"
+url: "https://github.com/Raoof128/MASARE"
+version: 1.0.0
+date-released: "2025-01-15"
+
+keywords:
+  - malware-analysis
+  - reverse-engineering
+  - threat-intelligence
+  - cuckoo-sandbox
+  - yara-rules
+  - mitre-attack
+  - incident-response
+  - digital-forensics
+  - security-research
+  - sandbox
+  - dynamic-analysis
+  - static-analysis
+  - ioc-extraction
+  - threat-hunting
+
+license: MIT
+
+preferred-citation:
+  type: software
+  title: "MASARE: An Enterprise-Grade Malware Analysis Sandbox with Automated Reverse Engineering"
+  authors:
+    - family-names: "MASARE Project"
+      given-names: "Contributors"
+  year: 2025
+  url: "https://github.com/Raoof128/MASARE"
+  version: 1.0.0
+
+# References for technologies used
+references:
+  - type: software
+    title: "Cuckoo Sandbox"
+    authors:
+      - family-names: "Cuckoo Foundation"
+    url: "https://cuckoosandbox.org/"
+    notes: "Dynamic malware analysis platform"
+
+  - type: software
+    title: "YARA"
+    authors:
+      - family-names: "Alvarez"
+        given-names: "Victor M."
+    url: "https://virustotal.github.io/yara/"
+    notes: "Pattern matching for malware researchers"
+
+  - type: software
+    title: "Ghidra"
+    authors:
+      - name: "National Security Agency (NSA)"
+    url: "https://ghidra-sre.org/"
+    notes: "Software reverse engineering framework"
+
+  - type: database
+    title: "MITRE ATT&CK Framework"
+    authors:
+      - name: "MITRE Corporation"
+    url: "https://attack.mitre.org/"
+    notes: "Knowledge base of adversary tactics and techniques"
+
+# Example citations for different formats:
+
+# APA Style:
+# MASARE Project Contributors. (2025). MASARE: Malware Analysis Sandbox with
+# Automated Reverse Engineering (Version 1.0.0) [Computer software].
+# https://github.com/Raoof128/MASARE
+
+# MLA Style:
+# MASARE Project Contributors. MASARE: Malware Analysis Sandbox with Automated
+# Reverse Engineering. Version 1.0.0, 2025. GitHub,
+# https://github.com/Raoof128/MASARE.
+
+# Chicago Style:
+# MASARE Project Contributors. 2025. "MASARE: Malware Analysis Sandbox with
+# Automated Reverse Engineering." Version 1.0.0. https://github.com/Raoof128/MASARE.
+
+# BibTeX:
+# @software{masare2025,
+#   title = {MASARE: Malware Analysis Sandbox with Automated Reverse Engineering},
+#   author = {{MASARE Project Contributors}},
+#   year = {2025},
+#   url = {https://github.com/Raoof128/MASARE},
+#   version = {1.0.0}
+# }
+
+# For academic papers citing MASARE:
+# When citing MASARE in academic publications, please acknowledge:
+# 1. The specific version used in your research
+# 2. The analysis capabilities utilized (e.g., dynamic analysis, YARA generation)
+# 3. Any modifications or extensions made to the tool
+# 4. Ethical approval for malware research (if applicable)
+
+# Example research paper citation:
+# "Malware samples were analyzed using MASARE v1.0.0 (MASARE Project Contributors,
+# 2025), an automated malware analysis platform combining Cuckoo Sandbox for
+# dynamic analysis and Ghidra for static reverse engineering. Analysis was
+# conducted in a fully isolated virtual environment following ethical research
+# guidelines..."

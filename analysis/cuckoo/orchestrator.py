@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Cuckoo Sandbox Orchestrator for MASARE
+
+Copyright (c) 2025 MASARE Project
+Licensed under the MIT License - see LICENSE file for details
+
 Purpose: Automated malware analysis workflow with IOC extraction
 Author: Security Research Team
 Last Updated: 2025-11-15
+Project: https://github.com/Raoof128/MASARE
 
 Usage:
     python3 orchestrator.py --sample /path/to/malware.exe
