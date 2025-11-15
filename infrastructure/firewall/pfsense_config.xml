@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!--
+pfSense Firewall Configuration for MASARE
+Purpose: Network isolation for malware analysis lab
+WARNING: This blocks ALL egress traffic - VMs cannot reach internet
+-->
+<pfsense>
+  <version>2.7</version>
+  <lastchange></lastchange>
+
+  <!-- System configuration -->
+  <system>
+    <hostname>pfsense-masare</hostname>
+    <domain>lab.local</domain>
+    <timezone>UTC</timezone>
+    <timeservers>pool.ntp.org</timeservers>
+  </system>
+
+  <!-- Interface configuration -->
+  <interfaces>
+    <!-- LAN interface (lab network) -->
+    <lan>
+      <enable></enable>
+      <if>em0</if>
+      <ipaddr>192.168.1.1</ipaddr>
+      <subnet>24</subnet>
+      <ipaddrv6></ipaddrv6>
+      <subnetv6></subnetv6>
+      <media></media>
+      <mediaopt></mediaopt>
+      <spoofmac></spoofmac>
+    </lan>
+
+    <!-- WAN interface (DISABLED - no uplink) -->
+    <wan>
+      <enable></enable>
+      <if>em1</if>
+      <ipaddr></ipaddr>
+      <subnet></subnet>
+      <gateway></gateway>
+      <blockpriv></blockpriv>
+      <blockbogons></blockbogons>
+      <spoofmac></spoofmac>
+    </wan>
+  </interfaces>
+
+  <!-- Firewall rules -->
+  <filter>
+    <rule>
+      <!-- Rule 1: BLOCK all WAN egress traffic -->
+      <type>block</type>
+      <interface>wan</interface>
+      <ipprotocol>inet</ipprotocol>
+      <source>
+        <any></any>
+      </source>
+      <destination>
+        <any></any>
+      </destination>
+      <descr>BLOCK ALL EGRESS - Malware isolation</descr>
+      <log>yes</log>
+    </rule>
+
+    <rule>
+      <!-- Rule 2: ALLOW inter-VM communication on LAN -->
+      <type>pass</type>
+      <interface>lan</interface>
+      <ipprotocol>inet</ipprotocol>
+      <protocol>tcp</protocol>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <network>lan</network>
+      </destination>
+      <descr>ALLOW inter-VM traffic</descr>
+      <log>no</log>
+    </rule>
+
+    <rule>
+      <!-- Rule 3: ALLOW DNS to pfSense (sinkhole) -->
+      <type>pass</type>
+      <interface>lan</interface>
+      <ipprotocol>inet</ipprotocol>
+      <protocol>udp</protocol>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <address>192.168.1.1</address>
+        <port>53</port>
+      </destination>
+      <descr>ALLOW DNS to sinkhole</descr>
+      <log>yes</log>
+    </rule>
+
+    <rule>
+      <!-- Rule 4: BLOCK LAN to host machine (prevent VM escape) -->
+      <type>block</type>
+      <interface>lan</interface>
+      <ipprotocol>inet</ipprotocol>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <address>192.168.1.254</address>
+      </destination>
+      <descr>BLOCK VM to host</descr>
+      <log>yes</log>
+    </rule>
+
+    <rule>
+      <!-- Rule 5: LOG all other traffic attempts -->
+      <type>block</type>
+      <interface>lan</interface>
+      <ipprotocol>inet</ipprotocol>
+      <source>
+        <any></any>
+      </source>
+      <destination>
+        <any></any>
+      </destination>
+      <descr>LOG and BLOCK all other traffic</descr>
+      <log>yes</log>
+    </rule>
+  </filter>
+
+  <!-- DNS resolver (sinkhole all queries) -->
+  <unbound>
+    <enable>on</enable>
+    <dnssec>on</dnssec>
+    <forwarding>off</forwarding>
+    <hosts>
+      <!-- Sinkhole all DNS queries to localhost -->
+      <host>
+        <host>*</host>
+        <domain>*</domain>
+        <ip>192.168.1.1</ip>
+        <descr>DNS Sinkhole for malware analysis</descr>
+      </host>
+    </hosts>
+  </unbound>
+
+  <!-- Snort IDS/IPS (optional) -->
+  <installedpackages>
+    <snortglobal>
+      <enable>on</enable>
+      <startup>on</startup>
+    </snortglobal>
+  </installedpackages>
+
+  <!-- System logging -->
+  <syslog>
+    <filterdescriptions>1</filterdescriptions>
+    <logfilesize>512000</logfilesize>
+    <rotatecount>7</rotatecount>
+    <logall>on</logall>
+  </syslog>
+</pfsense>

@@ -1,0 +1,119 @@
+{
+  "manifest_version": "1.0",
+  "created_date": "2025-11-15T00:00:00Z",
+  "organization": "Security Research Lab",
+  "analyst": "your_name@example.com",
+
+  "samples": [
+    {
+      "id": "SAMPLE-001",
+      "filename": "emotet_variant_2024.exe.gpg",
+      "original_filename": "emotet_variant_2024.exe",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "md5": "d41d8cd98f00b204e9800998ecf8427e",
+      "sha1": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+      "ssdeep": "3::/",
+      "file_size": 524288,
+      "file_type": "PE32 executable",
+
+      "source": "MalwareBazaar",
+      "source_url": "https://bazaar.abuse.ch/sample/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_date": "2024-11-01",
+      "acquisition_date": "2025-11-15T10:30:00Z",
+      "acquired_by": "analyst_username",
+
+      "classification": {
+        "family": "Emotet",
+        "variant": "Epoch 5",
+        "threat_level": "CRITICAL",
+        "category": "Banking Trojan",
+        "tags": ["trojan", "credential-stealer", "spambot"]
+      },
+
+      "storage": {
+        "encryption_method": "GPG AES-256",
+        "passphrase_location": "KeePassXC vault: malware_samples",
+        "storage_location": "/shared/malware/samples/emotet_variant_2024.exe.gpg",
+        "backup_location": null,
+        "retention_policy": "2 years"
+      },
+
+      "analysis": {
+        "status": "analyzed",
+        "analysis_date": "2025-11-15T11:00:00Z",
+        "cuckoo_task_id": 12345,
+        "report_location": "/shared/analysis/results/task_12345_emotet_variant_2024.exe",
+        "yara_rules_generated": true,
+        "mitre_mapping_complete": true
+      },
+
+      "notes": "Sample obtained from public MalwareBazaar repository. Confirmed Emotet banking trojan with C2 communication to known infrastructure. High confidence attribution to Emotet group."
+    },
+
+    {
+      "id": "SAMPLE-002",
+      "filename": "ransomware_sample.bin.gpg",
+      "original_filename": "ransomware_sample.bin",
+      "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "md5": "0123456789abcdef0123456789abcdef",
+      "sha1": "0123456789abcdef0123456789abcdef01234567",
+      "ssdeep": "96:kJ8F3M...",
+      "file_size": 1048576,
+      "file_type": "PE32 executable",
+
+      "source": "VirusShare",
+      "source_url": "https://virusshare.com/file/0123456789abcdef",
+      "source_date": "2024-10-15",
+      "acquisition_date": "2025-11-15T14:00:00Z",
+      "acquired_by": "analyst_username",
+
+      "classification": {
+        "family": "Ryuk",
+        "variant": "Unknown",
+        "threat_level": "CRITICAL",
+        "category": "Ransomware",
+        "tags": ["ransomware", "encryption", "data-destruction"]
+      },
+
+      "storage": {
+        "encryption_method": "GPG AES-256",
+        "passphrase_location": "KeePassXC vault: malware_samples",
+        "storage_location": "/shared/malware/samples/ransomware_sample.bin.gpg",
+        "backup_location": null,
+        "retention_policy": "2 years"
+      },
+
+      "analysis": {
+        "status": "pending",
+        "analysis_date": null,
+        "cuckoo_task_id": null,
+        "report_location": null,
+        "yara_rules_generated": false,
+        "mitre_mapping_complete": false
+      },
+
+      "notes": "Suspected Ryuk ransomware variant. Analysis pending. Handle with extreme caution - destructive payload."
+    }
+  ],
+
+  "statistics": {
+    "total_samples": 2,
+    "analyzed": 1,
+    "pending": 1,
+    "failed": 0,
+    "threat_levels": {
+      "CRITICAL": 2,
+      "HIGH": 0,
+      "MEDIUM": 0,
+      "LOW": 0
+    }
+  },
+
+  "compliance": {
+    "all_samples_from_approved_sources": true,
+    "encryption_verified": true,
+    "chain_of_custody_documented": true,
+    "legal_framework_reviewed": true,
+    "analyst_training_complete": true
+  }
+}

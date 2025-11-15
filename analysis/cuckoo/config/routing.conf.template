@@ -1,0 +1,35 @@
+# Cuckoo Routing Configuration
+# MASARE - Network Isolated Configuration
+
+[routing]
+# Default routing method (none, drop, internet, tor, vpn)
+# For MASARE, we use 'none' to ensure complete isolation
+route = none
+
+# Internet routing (disabled for safety)
+internet = none
+
+# Drop routing (block all traffic)
+drop = no
+
+# Enable automatic routing
+auto = no
+
+# Inetsim configuration (optional - for simulating internet services)
+[inetsim]
+enabled = no
+server = 192.168.1.1
+ports =
+
+# Tor routing (disabled)
+[tor]
+enabled = no
+
+# VPN routing (disabled)
+[vpn]
+enabled = no
+
+# Network isolation (enabled)
+[drop]
+# Drop all outbound traffic except to resultserver
+enabled = yes

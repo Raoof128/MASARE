@@ -1,0 +1,108 @@
+# Docker Compose configuration for MASARE (optional containerized deployment)
+# Alternative to VirtualBox VMs - faster provisioning, lower resource usage
+
+version: '3.8'
+
+services:
+  # Cuckoo Sandbox container
+  cuckoo:
+    image: blacktop/cuckoo:latest
+    container_name: masare_cuckoo
+    hostname: cuckoo
+    networks:
+      masare_isolated:
+        ipv4_address: 192.168.1.10
+    volumes:
+      - ./analysis/cuckoo/config:/cuckoo/conf
+      - ./shared/malware/samples:/samples:ro
+      - ./shared/analysis/results:/cuckoo/storage
+      - ./shared/logs:/var/log/cuckoo
+    ports:
+      - "8000:8000"  # Web interface (host access only)
+      - "2042:2042"  # Result server
+    environment:
+      - CUCKOO_API_TOKEN=${CUCKOO_API_TOKEN:-masare-api-token}
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+
+  # PostgreSQL database for Cuckoo
+  postgres:
+    image: postgres:15-alpine
+    container_name: masare_postgres
+    networks:
+      masare_isolated:
+        ipv4_address: 192.168.1.11
+    environment:
+      - POSTGRES_USER=cuckoo
+      - POSTGRES_PASSWORD=cuckoo
+      - POSTGRES_DB=cuckoo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # MongoDB for Cuckoo analysis results
+  mongodb:
+    image: mongo:6-jammy
+    container_name: masare_mongodb
+    networks:
+      masare_isolated:
+        ipv4_address: 192.168.1.12
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # Elasticsearch for log aggregation (optional)
+  elasticsearch:
+    image: elasticsearch:8.11.0
+    container_name: masare_elasticsearch
+    networks:
+      masare_isolated:
+        ipv4_address: 192.168.1.13
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+# Network configuration (isolated from internet)
+networks:
+  masare_isolated:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "false"  # Disable NAT
+      com.docker.network.driver.mtu: "1500"
+    internal: true  # CRITICAL: Prevents internet access
+
+# Persistent volumes
+volumes:
+  postgres_data:
+    driver: local
+  mongodb_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+
+# Usage:
+#   docker-compose up -d          # Start all services
+#   docker-compose logs -f        # View logs
+#   docker-compose down           # Stop all services
+#   docker-compose down -v        # Stop and remove volumes

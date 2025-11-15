@@ -1,0 +1,50 @@
+# Cuckoo Sandbox Configuration for MASARE
+# This is a template - customize for your environment
+
+[cuckoo]
+# Cuckoo version and branding
+version = 2.0.7
+machinery = virtualbox
+memory_dump = off
+terminate_processes = off
+reschedule = off
+process_results = on
+max_analysis_count = 0
+max_machines_count = 0
+max_vmstartup_count = 10
+freespace = 64
+tmppath = /tmp
+delete_original = off
+delete_bin_copy = off
+
+[resultserver]
+# Result server listen IP address
+ip = 192.168.1.10
+# Result server listen port
+port = 2042
+# Store screenshots in PNG format
+store_csvlogs = off
+# Maximum screenshot size in bytes (0 = unlimited)
+upload_max_size = 134217728
+
+[processing]
+# Enable/disable all processing modules
+analysis_size_limit = 134217728
+resolve_dns = on
+
+[database]
+connection = postgresql://cuckoo:password@localhost/cuckoo
+timeout = 60
+
+[timeouts]
+# Default analysis timeout (in seconds)
+default = 120
+# Critical timeout (in seconds)
+critical = 60
+# Maximum time to wait for VM to boot (in seconds)
+vm_state = 60
+
+[remotecontrol]
+# Enable guacamole display
+enabled = no
+guacamole = http://localhost:8080/guacamole

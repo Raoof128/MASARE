@@ -22,18 +22,31 @@ from pathlib import Path
 from typing import List, Dict
 
 # Add parent directory to path for imports
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from analysis.cuckoo.orchestrator import MalwareAnalysisOrchestrator
-from detection.yara.signature_generator import YARASignatureGenerator
-from automation.report_generator import MalwareAnalysisReportGenerator
-from automation.mitre_attack_mapper import MITREATTACKMapper
+# Try to import modules, fall back to running as standalone scripts if import fails
+try:
+    from analysis.cuckoo.orchestrator import MalwareAnalysisOrchestrator
+    from detection.yara.signature_generator import YARASignatureGenerator
+    from automation.report_generator import MalwareAnalysisReportGenerator
+    from automation.mitre_attack_mapper import MITREATTACKMapper
+    IMPORTS_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"Could not import modules directly: {e}")
+    logging.info("Will run analysis scripts as subprocesses instead")
+    IMPORTS_AVAILABLE = False
+
+# Create logs directory if it doesn't exist
+log_dir = Path('/shared/logs')
+if not log_dir.exists():
+    log_dir = Path.home() / 'masare_logs'
+    log_dir.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/shared/logs/batch_analyzer.log'),
+        logging.FileHandler(log_dir / 'batch_analyzer.log'),
         logging.StreamHandler(sys.stdout)
     ]
 )
@@ -47,11 +60,17 @@ class BatchMalwareAnalyzer:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Initialize components
-        self.cuckoo_orchestrator = MalwareAnalysisOrchestrator(output_dir=str(self.output_dir))
-        self.yara_generator = YARASignatureGenerator()
-        self.report_generator = MalwareAnalysisReportGenerator()
-        self.mitre_mapper = MITREATTACKMapper()
+        # Initialize components (only if imports available)
+        if IMPORTS_AVAILABLE:
+            self.cuckoo_orchestrator = MalwareAnalysisOrchestrator(output_dir=str(self.output_dir))
+            self.yara_generator = YARASignatureGenerator()
+            self.report_generator = MalwareAnalysisReportGenerator()
+            self.mitre_mapper = MITREATTACKMapper()
+        else:
+            self.cuckoo_orchestrator = None
+            self.yara_generator = None
+            self.report_generator = None
+            self.mitre_mapper = None
 
         self.results = []
 

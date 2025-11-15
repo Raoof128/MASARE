@@ -1,0 +1,53 @@
+# VirtualBox Configuration for Cuckoo Sandbox
+# MASARE Lab Setup
+
+[virtualbox]
+# VirtualBox path
+mode = gui
+path = /usr/bin/VBoxManage
+
+# VirtualBox machines
+machines = FLARE_MASARE
+
+# Interface to use for analysis VM networking
+interface = vboxnet0
+
+[FLARE_MASARE]
+# VM label/name
+label = FLARE_MASARE
+
+# VM platform (windows, linux, darwin)
+platform = windows
+
+# VM IP address (must be in same network as resultserver)
+ip = 192.168.1.20
+
+# VM snapshot name to restore before analysis
+snapshot = baseline_clean
+
+# VM architecture (x86, x64)
+arch = x64
+
+# VM OS version
+osprofile = WinProfile10x64
+
+# VM tags (optional)
+tags = windows10,x64,flare
+
+# VM interface (network adapter number)
+interface =
+
+# VM resultserver IP (usually same as resultserver IP)
+resultserver_ip = 192.168.1.10
+
+# VM resultserver port
+resultserver_port = 2042
+
+# VM options (optional)
+options =
+
+# VM memory (MB)
+memory = 4096
+
+# VM timeout (seconds)
+timeout = 120
