@@ -1,0 +1,16 @@
+# MASARE - Malware Analysis Sandbox with Automated Reverse Engineering
+# Python Dependencies
+
+# Core Analysis
+requests>=2.31.0
+yara-python>=4.3.1
+
+# Report Generation
+jinja2>=3.1.2
+
+# Data Processing
+pandas>=2.1.0
+
+# Optional: Enhanced Features
+# cuckoo>=2.0.0  # Install separately - complex dependencies
+# volatility3>=2.4.0  # Memory forensics

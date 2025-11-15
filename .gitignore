@@ -1,0 +1,186 @@
+# MASARE - Malware Analysis Sandbox
+# .gitignore
+
+# ===================================
+# CRITICAL: NEVER COMMIT MALWARE
+# ===================================
+# Malware samples and encrypted samples
+*.exe
+*.dll
+*.bin
+*.scr
+*.com
+*.bat
+*.vbs
+*.ps1
+*.gpg
+*.enc
+
+# Exception: Allow infrastructure setup scripts
+!infrastructure/**/*.ps1
+!infrastructure/**/*.bat
+!infrastructure/**/*.sh
+
+# Malware directories
+shared/malware/samples/
+malware_samples/
+samples/
+
+# ===================================
+# Analysis Results & Reports
+# ===================================
+shared/analysis/results/
+analysis/cuckoo/results/
+reports/*.html
+reports/*.json
+reports/*.pdf
+
+# Cuckoo database and logs
+*.db
+*.sqlite
+*.sqlite3
+analysis/cuckoo/storage/
+~/.cuckoo/
+
+# ===================================
+# Logs & Temporary Files
+# ===================================
+shared/logs/
+logs/
+*.log
+*.log.*
+
+# Temporary analysis files
+/tmp/
+*.tmp
+*.temp
+
+# ===================================
+# Python
+# ===================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ===================================
+# VirtualBox / VM Files
+# ===================================
+*.vdi
+*.vmdk
+*.vbox
+*.vbox-prev
+*.ova
+*.iso
+
+# Snapshots
+Snapshots/
+*.sav
+
+# VM logs
+VBox.log*
+
+# ===================================
+# macOS
+# ===================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ===================================
+# Linux
+# ===================================
+*~
+.directory
+.Trash-*
+
+# ===================================
+# Windows
+# ===================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===================================
+# IDEs & Editors
+# ===================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ===================================
+# Sensitive Configuration
+# ===================================
+*.pem
+*.key
+*.cert
+*.p12
+config.local.json
+secrets.json
+
+# API tokens
+.env
+.env.local
+*.token
+
+# ===================================
+# Build & Distribution
+# ===================================
+build/
+dist/
+*.egg-info/
+*.egg
+
+# ===================================
+# Documentation Builds
+# ===================================
+docs/_build/
+site/
+
+# ===================================
+# Backup Files
+# ===================================
+*.bak
+*.backup
+*.old
+
+# ===================================
+# YARA Compiled Rules
+# ===================================
+*.yarc
+
+# ===================================
+# Ghidra Projects
+# ===================================
+*.gpr
+*.rep/
+*.lock
+
+# ===================================
+# Network Captures
+# ===================================
+*.pcap
+*.pcapng
+*.cap
+
+# ===================================
+# Keep Empty Directories
+# ===================================
+!.gitkeep
